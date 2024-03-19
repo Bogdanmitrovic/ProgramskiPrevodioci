@@ -1,0 +1,104 @@
+a)
+Dec -> TYPE VarList;
+VarList -> Var | VarList, Var
+Var -> ID | ID = CONST
+
+smena 1:
+VL -> Var VL' 
+VL' -> , VL' | epsilon
+
+smena 2:
+V -> ID V'
+V' -> = CONST | epsilon
+
+1) D -> TYPE VL;
+2) VL -> V VL'
+3) VL' -> ,VL'
+4) VL' -> epsilon
+5) V -> ID V'
+6) V' -> = CONST
+7) V' -> epsilon
+
+FIRST(V') = {=,epsilon}
+FOLLOW(V') = {,,;}
+presek = nista => jeste LL(1)
+
+FIRST(VL') = {,,epsilon}
+FOLLOW(VL') = {;}
+presek = nista => jeste LL(1)
+
+b)
+1) D -> TYPE VL;
+2) VL -> V
+3) VL -> VL, V
+4) V -> ID
+5) V -> ID = CONST
+
+l0:
+D' -> .D                🗸
+D -> .TYPE VL           🗸
+
+l1:
+goto(l0, D)
+D' -> D.        (acc)   🗸
+
+l2:
+goto(l0, TYPE)
+D -> TYPE .VL           🗸
+VL -> .V                🗸
+VL -> .VL, V            🗸
+V -> .ID                🗸
+V -> .ID = CONST        🗸
+
+l3:
+goto(l2, VL)
+D -> TYPE VL.   (r1)    🗸
+VL -> VL., V            🗸
+
+l4:
+goto(l2, V)
+VL -> V.        (r2)    🗸
+
+l5:
+goto(l2, ID)
+V -> ID.        (r4)    🗸
+V -> ID. = CONST        🗸
+
+l6:
+goto(l3, ,)
+VL -> VL, .V            🗸
+V -> .ID                🗸  isto kao l5
+V -> .ID = CONST        🗸  isto kao l5
+
+l7:
+goto(l5, =)
+V -> ID =. CONST        🗸
+
+l8:
+goto(l6, V)
+VL -> VL, V.    (r3)    🗸
+
+l9:
+goto(l7, CONST)
+V -> ID = CONST.(r5)    🗸
+
+
+FOLLOW(D)={#}
+FOLLOW(VL)={,,;}
+FOLLOW(V)={,,;}
+
+
+
+
+        |TYPE   | ;     | ,     | ID    | =     | CONST | #     | VL    | V     | D     |
+=========================================================================================
+l0      |  s2   |       |       |       |       |       |       |       |       |   1   |
+l1      |       |       |       |       |       |       |  acc  |       |       |       |
+l2      |       |       |       |  s5   |       |       |       |   3   |   4   |       |
+l3      |       |       |  s6   |       |       |       |  r1   |       |       |       |
+l4      |       |  r2   |  r2   |       |       |       |       |       |       |       |
+l5      |       |  r4   |  r4   |       |   s7  |       |       |       |       |       |
+l6      |       |       |       |  s5   |       |       |       |       |   8   |       |
+l7      |       |       |       |       |       |  s9   |       |       |       |       |
+l8      |       |  r3   |  r3   |       |       |       |       |       |       |       |
+l9      |       |  r5   |  r5   |       |       |       |       |       |       |       |

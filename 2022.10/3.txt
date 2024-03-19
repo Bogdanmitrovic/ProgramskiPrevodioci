@@ -1,0 +1,62 @@
+SelectStatement -> select AlternativeList end
+AlternativeList -> AlternativeList or Alternative | Alternative
+Alternative -> when Expression => SelectStatement
+
+public class SelectStatement extends Statement {
+    private ArrayList<Alternative> alternativeList;
+
+    public SelectStatement(ArrayList<Alternative> altList)
+        this.alternativeList = altList;
+
+    public void translate(BufferedWriter out) throws IOException {
+        String kraj = ASTNode.genLab();
+        for(Alternative a : alternativeList)
+        {
+            a.setKrajLabela(kraj);
+            a.translate(out);
+        }
+        out.write(kraj + ":\n");
+    }
+}
+
+public class Alternative extends Statement {
+    private Expression expression;
+    private Statement statement;
+    private String krajLabela;
+
+    public Alternative(Expression exp, Statement st)
+    {
+        this.expression = exp;
+        this.statement = st;
+    }
+
+    public void setKrajLabela(String lab) this.krajLabela = lab;
+
+    public void translate(BufferedWriter out) throws IOException {
+        String temp = ASTNode.genLab();
+        expression.translate(out);
+        expression.genLoad("R1", out);
+        out.write("JumpIfZero R1," + temp + "\n");
+        statement.translate(out);
+        out.write("Jump " + krajLabela + "\n");
+        out.write(temp + ":\n");
+    }
+}
+
+IMC<expression1>                    🗸
+Load_Mem R1, RESULT<expression1>    🗸
+JumpIfZero R1, kraj1                🗸
+IMC<statement1>                     🗸
+Jump kraj                           🗸
+kraj1:                              🗸
+
+IMC<expression2>
+Load_Mem R1, RESULT<expression2>
+JumpIfZero R1, kraj2
+IMC<statement2>
+Jump kraj
+kraj2:
+
+...
+
+kraj:

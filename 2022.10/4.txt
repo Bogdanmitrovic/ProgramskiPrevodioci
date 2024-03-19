@@ -1,0 +1,64 @@
+aktivacioni slog
+[sum]
+[q]
+[adresa povratka]
+[EBP]
+[condition]
+
+struct question
+[next] 4
+[id] 2
+[score] 0
+
+radni stack i registri EBP[stari EBP]
+[sum] EBP + 6
+[q*] EBP + 4 
+[adresa povratka] EBP + 2 ESP
+[]
+[]
+[]
+[]
+[]
+
+test_score:
+// obavezno
+PUSH EBP
+MOV ESP, EBP
+SUB ESP, 2
+
+MOV BX, [EBP + 4]
+MOV AX, [BX + 2]
+PUSH AX
+CALL execute_query
+POP DX
+MOV [EBP - 2], DX
+
+CMP DX, 1
+JNE lab1
+MOV BX, [EBP + 4]
+MOV AX, [BX + 0]
+MOV BX, [EBP + 6]
+ADD AX, BX
+MOV [EBP + 6], AX
+lab1:
+
+MOV BX, [EBP + 4]
+MOV AX, [BX + 4]
+CMP AX, 0
+JE lab2
+MOV AX, [EBP + 6]
+PUSH AX
+MOV BX, [EBP + 4]
+MOV AX, [BX + 4]
+PUSH AX
+CALL test_score
+
+MOV ESP, EBP
+POP EBP
+RET
+lab2:
+MOV CX, [EBP + 6]
+
+MOV ESP, EBP
+POP EBP
+RET
