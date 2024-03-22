@@ -1,0 +1,59 @@
+a)
+CD -> class ID { ML }
+ML -> M | ML M
+M -> ID ID; | ID ID = CONST;
+
+smena 1:
+ML -> M ML'
+ML' -> M ML' | epsilon
+
+smena 2:
+M -> ID ID M'
+M' -> ; | = CONST;
+
+1) CD -> class ID { ML }
+2) ML -> M ML'
+3) ML' -> M ML'
+4) ML' -> epsilon
+5) M -> ID ID M'
+6) M' -> ;
+7) M' -> = CONST;
+
+3 - FIRST(ML') = {ID}
+4 - FIRST(ML') = {epsilon} -> FOLLOW(ML') = {}}
+presek = nista => jeste LL(1)
+
+6 - FIRST(M') = {;}
+7 - FIRST(M') = {=}
+presek = nista => jeste LL(1)
+
+b)
+1) CD -> class ID { ML }
+2) ML -> M
+3) ML -> ML M
+4) M -> ID ID;
+5) M -> ID ID = CONST;
+
+l0:
+CD' -> .CD                  +
+CD -> .class ID { ML }      +
+
+l1:
+goto(l0, CD)
+CD' -> CD.          (acc)   +
+
+l2:
+goto(l0, class)
+CD -> class .ID { ML }      +
+
+l3:
+goto(l2, ID)
+CD -> class ID .{ ML }      +
+
+l4:
+goto(l3, {)
+CD -> class ID { .ML }
+ML -> .M
+ML -> .ML M
+M -> .ID ID;
+M -> 
