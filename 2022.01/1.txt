@@ -35,25 +35,92 @@ b)
 5) M -> ID ID = CONST;
 
 l0:
-CD' -> .CD                  +
-CD -> .class ID { ML }      +
+CD' -> .CD                      +
+CD -> .class ID { ML }          +
 
 l1:
 goto(l0, CD)
-CD' -> CD.          (acc)   +
+CD' -> CD.              (acc)   +
 
 l2:
 goto(l0, class)
-CD -> class .ID { ML }      +
+CD -> class .ID { ML }          +
 
 l3:
 goto(l2, ID)
-CD -> class ID .{ ML }      +
+CD -> class ID .{ ML }          +
 
 l4:
 goto(l3, {)
-CD -> class ID { .ML }
-ML -> .M
-ML -> .ML M
-M -> .ID ID;
-M -> 
+CD -> class ID { .ML }          +
+ML -> .M                        +
+ML -> .ML M                     +
+M -> .ID ID;                    +
+M -> .ID ID = CONST;            +
+
+l5:
+goto(l4, ML)
+CD -> class ID { ML .}          +
+ML -> ML .M                     +
+M -> .ID ID;                    +   isto kao l4->l7
+M -> .ID ID = CONST;            +   isto kao l4->l7
+
+l6:
+goto(l4, M)
+ML -> M.                (r2)    +
+
+l7:
+goto(l4, ID)
+M -> ID .ID;                    +
+M -> ID .ID = CONST;            +
+
+l8:
+goto(l5, })
+CD -> class ID { ML }.  (r1)    +
+
+l9:
+goto(l5, M)
+ML -> ML M.             (r3)    +
+
+l10:
+goto(l7, ID)
+M -> ID ID.;                    +
+M -> ID ID .= CONST;            +
+
+l11:
+goto(l10, ;)
+M -> ID ID;.            (r4)    +
+
+l12:
+goto(l10, =)
+M -> ID ID = .CONST;            +
+
+l13:
+goto(l12, CONST)
+M -> ID ID = CONST.;
+
+l14:
+goto(l13, ;)
+M -> ID ID = CONST;.    (r5)    +
+
+FOLLOW(CD) = {#}
+FOLLOW(ML) = {ID, }}
+FOLLOW(M) = {ID, }}
+
+        | class | ;     |   {   |   }   | ID    | =     | CONST |   #   |  CD   |  ML   |   M   |
+=================================================================================================
+l0      |  s2   |       |       |       |       |       |       |       |   1   |       |       |
+l1      |       |       |       |       |       |       |       |  acc  |       |       |       |
+l2      |       |       |       |       |  s3   |       |       |       |       |       |       |
+l3      |       |       |  s4   |       |       |       |       |       |       |       |       |
+l4      |       |       |       |       |  s7   |       |       |       |       |   5   |   6   |
+l5      |       |       |       |  s8   |  s7   |       |       |       |       |       |   9   |
+l6      |       |       |       |  r2   |  r2   |       |       |       |       |       |       |
+l7      |       |       |       |       |  s10  |       |       |       |       |       |       |
+l8      |       |       |       |       |       |       |       |  r1   |       |       |       |
+l9      |       |       |       |  r3   |  r3   |       |       |       |       |       |       |
+l10     |       |  s11  |       |       |       |  s12  |       |       |       |       |       |
+l11     |       |       |       |  r4   |  r4   |       |       |       |       |       |       |
+l12     |       |       |       |       |       |       |  s13  |       |       |       |       |
+l13     |       |  s14  |       |       |       |       |       |       |       |       |       |
+l14     |       |       |       |  r5   |  r5   |       |       |       |       |       |       |

@@ -1,0 +1,72 @@
+aktivacioni slog:
+[rezultat]
+[rest_lat]
+[rest_long]
+[max_distance]
+[person]
+[adresa povratka]
+[stari BP]
+[distance]
+[count]
+
+
+struct delivery:
+[has_car]+8
+[long]+6
+[lat]+4
+[is_busy]+2
+[next]0
+
+
+PUSH BP
+MOV BP, SP
+
+SUB SP, 2
+PUSH 0
+
+MOV BX, [BP+4]
+MOV AX, [BX+2]
+CMP AX, 0
+JNE lab1
+PUSH [BP+10]
+PUSH [BP+8]
+PUSH [BX+4]
+PUSH [BX+6]
+CALL calculate_distance
+ADD SP, 8
+MOV AX, 2
+MOV BX, [BP+4]
+MOV DX, [BX+8]
+SUB AX, DX
+MUL CX
+MOV [BP-2], AX
+MOV CX, [BP+6]
+CMP AX, CX
+JGE lab1
+MOV DX, [BP-4]
+ADD DX, 1
+MOV [BP-4], DX
+lab1:
+MOV CX, [BX+0]
+CMP CX, 0
+JE lab2
+SUB SP, 2
+PUSH [BP+10]            // TODO proveri jel sme push sa stacka na stack
+PUSH [BP+8]
+PUSH [BP+6]
+PUSH [BX+0]
+CALL find_delivery
+ADD SP, 8
+POP AX
+POP BX
+ADD AX, BX
+MOV [BP+12], AX
+MOV SP, BP
+POP BP
+RET
+lab2:
+POP BX
+MOV [BP+12], BX
+MOV SP, BP
+POP BP
+RET
