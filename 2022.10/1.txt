@@ -19,12 +19,12 @@ V' -> = CONST | epsilon
 6) V' -> = CONST
 7) V' -> epsilon
 
-FIRST(V') = {=,epsilon}
-FOLLOW(V') = {,,;}
+3 - FIRST(VL') = {,}
+4 - FIRST(VL') = {epsilon} -> FOLLOW(VL') = {;}
 presek = nista => jeste LL(1)
 
-FIRST(VL') = {,,epsilon}
-FOLLOW(VL') = {;}
+5 - FIRST(V') = {=}
+6 - FIRST(V') = {epsilon} -> FOLLOW(V') = {,,;}
 presek = nista => jeste LL(1)
 
 b)
@@ -36,7 +36,7 @@ b)
 
 l0:
 D' -> .D                🗸
-D -> .TYPE VL           🗸
+D -> .TYPE VL;          🗸
 
 l1:
 goto(l0, D)
@@ -44,7 +44,7 @@ D' -> D.        (acc)   🗸
 
 l2:
 goto(l0, TYPE)
-D -> TYPE .VL           🗸
+D -> TYPE .VL;          🗸
 VL -> .V                🗸
 VL -> .VL, V            🗸
 V -> .ID                🗸
@@ -52,7 +52,7 @@ V -> .ID = CONST        🗸
 
 l3:
 goto(l2, VL)
-D -> TYPE VL.   (r1)    🗸
+D -> TYPE VL.;          🗸
 VL -> VL., V            🗸
 
 l4:
@@ -65,21 +65,25 @@ V -> ID.        (r4)    🗸
 V -> ID. = CONST        🗸
 
 l6:
+goto(l3, ;)
+D -> TYPE VL;.  (r1)    🗸
+
+l7:
 goto(l3, ,)
 VL -> VL, .V            🗸
 V -> .ID                🗸  isto kao l5
 V -> .ID = CONST        🗸  isto kao l5
 
-l7:
+l8:
 goto(l5, =)
 V -> ID =. CONST        🗸
 
-l8:
-goto(l6, V)
+l9:
+goto(l7, V)
 VL -> VL, V.    (r3)    🗸
 
-l9:
-goto(l7, CONST)
+l10:
+goto(l8, CONST)
 V -> ID = CONST.(r5)    🗸
 
 
@@ -95,10 +99,11 @@ FOLLOW(V)={,,;}
 l0      |  s2   |       |       |       |       |       |       |       |       |   1   |
 l1      |       |       |       |       |       |       |  acc  |       |       |       |
 l2      |       |       |       |  s5   |       |       |       |   3   |   4   |       |
-l3      |       |       |  s6   |       |       |       |  r1   |       |       |       |
+l3      |       |  s6   |  s7   |       |       |       |       |       |       |       |
 l4      |       |  r2   |  r2   |       |       |       |       |       |       |       |
-l5      |       |  r4   |  r4   |       |   s7  |       |       |       |       |       |
-l6      |       |       |       |  s5   |       |       |       |       |   8   |       |
-l7      |       |       |       |       |       |  s9   |       |       |       |       |
-l8      |       |  r3   |  r3   |       |       |       |       |       |       |       |
-l9      |       |  r5   |  r5   |       |       |       |       |       |       |       |
+l5      |       |  r4   |  r4   |       |   s8  |       |       |       |       |       |
+l6      |       |       |       |       |       |       |  r1   |       |       |       |
+l7      |       |       |       |  s5   |       |       |       |       |   9   |       |
+l8      |       |       |       |       |       |  s10  |       |       |       |       |
+l9      |       |  r3   |  r3   |       |       |       |       |       |       |       |
+l10     |       |  r5   |  r5   |       |       |       |       |       |       |       |

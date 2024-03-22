@@ -4,7 +4,10 @@ nonterminal ArrayList<Variable> VarList;
 nonterminal Variable Var;
 nonterminal Constant Konstanta;
 
-Dec::= TYPE:t
+Dec::= TYPE:t VarList:vl SEMICOLON
+{
+    
+}
 
 
 
