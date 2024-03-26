@@ -1,0 +1,94 @@
+NAPOMENA umesto tacke je napisan zarez da ne dodje do zabune
+a)
+I -> P | CONST
+P -> ID | ID,P | ID[I]
+
+smena1:
+P -> ID P'
+P' -> epsilon | ,P | [I]
+
+1) I -> P
+2) I -> CONST
+3) P -> ID P'
+4) P' -> epsilon
+5) P' -> ,P
+6) P' -> [I]
+
+4 - FIRST(P') = {epsilon} -> FOLLOW(P') = {#,]}
+5 - FIRST(P') = {,}
+6 - FIRST(P') = {[}
+presek = nista => jeste LL(1)
+
+b)
+1) I -> P
+2) I -> CONST
+3) P -> ID
+4) P -> ID,P
+5) P -> ID[I]
+
+l0:
+I' -> .I                +
+I -> .P                 +
+I -> .CONST             +
+P -> .ID                +
+P -> .ID,P              +
+P -> .ID[I]             +
+
+l1:
+goto(l0, I)
+I' -> I.        (acc)   +
+
+l2:
+goto(l0, P)
+I -> P.         (r1)    +
+
+l3:
+goto(l0, CONST)
+I -> CONST.     (r2)    +
+
+l4:
+goto(l0, ID)
+P -> ID.        (r3)    +
+P -> ID.,P              +
+P -> ID.[I]             +
+
+l5:
+goto(l4, ,)
+P -> ID,.P              +
+P -> .ID                + isto kao l0 -> l4
+P -> .ID,P              + isto kao l0 -> l4
+P -> .ID[I]             + isto kao l0 -> l4
+
+l6:
+goto(l4, [)
+P -> ID[.I]             +
+I -> .P                 + isto kao l0 -> l2
+I -> .CONST             + isto kao l0 -> l3
+
+l7:
+goto(l5, P)
+P -> ID,P.      (r4)    +
+
+l8:
+goto(l6, I)
+P -> ID[I.]             +
+
+l9:
+goto(l8, ])
+P -> ID[I].     (r5)    +
+
+FOLLOW(I) = {#, ]}
+FOLLOW(P) = {#, ]}
+
+        | CONST |   ,   |   [   |   ]   |  ID   |   #   |   I   |   P   |
+=========================================================================
+l0      |  s3   |       |       |       |  s4   |       |   1   |   2   |
+l1      |       |       |       |  acc  |       |  acc  |       |       |
+l2      |       |       |       |  r1   |       |  r1   |       |       |
+l3      |       |       |       |  r2   |       |  r2   |       |       |
+l4      |       |  s5   |  s6   |  r3   |       |  r3   |       |       |
+l5      |       |       |       |       |  s4   |       |       |   7   |
+l6      |  s3   |       |       |       |       |       |   8   |   2   |
+l7      |       |       |       |  r4   |       |  r4   |       |       |
+l8      |       |       |       |  s9   |       |       |       |       |
+l9      |       |       |       |  r5   |       |  r5   |       |       |

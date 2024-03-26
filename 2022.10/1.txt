@@ -4,8 +4,8 @@ VarList -> Var | VarList, Var
 Var -> ID | ID = CONST
 
 smena 1:
-VL -> Var VL' 
-VL' -> , VL' | epsilon
+VL -> V VL' 
+VL' -> ,V VL' | epsilon
 
 smena 2:
 V -> ID V'
@@ -13,7 +13,7 @@ V' -> = CONST | epsilon
 
 1) D -> TYPE VL;
 2) VL -> V VL'
-3) VL' -> ,VL'
+3) VL' -> ,V VL'
 4) VL' -> epsilon
 5) V -> ID V'
 6) V' -> = CONST

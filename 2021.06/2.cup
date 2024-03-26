@@ -1,0 +1,35 @@
+terminal OPEN_BRACKET, CLOSE_BRACKET, DOT, ID, CONST_REAL, CONST_INT, CONST_STRING;
+non terminal Izraz;
+non terminal Promenljiva;
+
+Izraz ::= Promenljiva:p
+{:
+    RESULT = p;
+:}
+| CONST_INT:c
+{:
+    RESULT = new Constant(parser.symbolTable.getType("INTEGER"), c);
+:}
+| CONST_REAL:r
+{:
+    RESULT = new Constant(parser.symbolTable.getType("REAL"), r);
+:}
+| CONST_STRING:s
+{:
+    RESULT = new Constant(parser.symbolTable.getType("STRING"), s);
+:}
+
+Promenljiva ::= ID:id
+{:
+    RESULT = new Variable(id);
+    parser.symbolTable.addVar(RESULT);
+:}
+| ID:id DOT Promenljiva p
+{:
+    if (parser.symbolTable.getVar(id).type.tkind != "STRUCT") {
+        System.out.println("Levo nije struct!");
+    }
+    else {
+        //nedovrseno ceka se da ivica odgovori
+    }
+:}
