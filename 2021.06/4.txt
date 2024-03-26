@@ -1,0 +1,58 @@
+aktivacioni slog:
+[l]
+[x]
+[povratna adresa]
+[stari bp] sp BP
+[result]
+
+struct layer:    !!!!!!PROVERITI
+[weight] + 4
+[act_id] + 2
+[next] 0
+
+stack:
+[l] BP + 6
+[x] BP + 4
+[povratna adresa] sp
+[]
+[]
+[]
+[]
+[]
+[]
+
+8086 kod:
+PUSH BP
+MOV BP, SP
+
+SUB SP, 2
+SUB SP, 2
+MOV BX, [BP + 6]
+MOV AX, [BX + 2]
+PUSH AX
+MOV AX, [BX + 4]
+PUSH AX
+MOV AX, [BP + 4]    // moze i direktno PUSH [BP + 4]
+PUSH AX
+CALL activate
+ADD SP, 6
+POP AX
+MOV [BP - 2], AX
+MOV BX, [BP + 6]
+MOV AX, [BX + 0]
+CMP AX, 0
+JE lab1
+
+PUSH AX
+PUSH [BP - 2]
+CALL feed_forward
+MOV SP, BP
+POP BP
+RET
+
+lab1:
+
+MOV CX, [BP - 2]
+MOV SP, BP
+POP BP
+RET
