@@ -27,6 +27,10 @@ class RepeatStatement extends Statement {
         for (ASTNode node : body) {
             node.translate(out);
         }
+        out.write("Load_Mem R1, " + tempVar + "\n");
+        out.write("Load_Const R2, 1\n");
+        out.write("Sub R1, R2\n");
+        out.write("Store_Mem R1, " + tempVar + "\n")
         conditionExpression.translate(out);
         conditionExpression.genLoad("R1", out);
         out.write("Load_Const R2, 1\n");
@@ -43,6 +47,7 @@ tempVar = timesExpression
 start:
 tempVar==0 ? jump kraj
 body
+tempVar--
 condexp!=1? jump start
 final
 kraj:
@@ -58,6 +63,10 @@ JumpIfZero R1, kraj
 IMC<body[1]>
 ...
 IMC<body[n]>
+Load_Mem R1, tempVar
+Load_Const R2, 1
+Sub R1, R2
+Store_Mem R1, tempVar
 IMC<conditionExpression>
 Load_Mem R1, RESULT<conditionExpression>
 Load_Const R2, 1

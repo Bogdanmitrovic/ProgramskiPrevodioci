@@ -1,0 +1,60 @@
+ConditionalExpression -> Expression ? Expression : Expression : Expression
+
+public class ConditionalExpression extends Expression {
+    private Expression uslov;
+    private Expression manji;
+    private Expression nula;
+    private Expression veci;
+
+    public ConditionalExpression(uslov,manji,nula,veci) {
+        this.uslov = uslov;
+        this.manji = manji;
+        this.nula = nula;
+        this.veci = veci;
+    }
+    public void translate(BufferedWriter out) throws IOException {
+        String vece_manje = ASTNode.genLab();
+        String vece = ASTNode.genLab();
+        String kraj = ASTNode.genLab();
+        uslov.translate(out);
+        uslov.genLoad("R1", out);
+        out.write("JumpIfNotZero R2, " + vece_manje + "\n");
+        nula.translate(out);
+        nula.Load_Mem("R3", out);
+        out.write("Jump kraj\n");
+        out.write(vece_manje + ":\n");
+        out.write("Load_Const R2, 0\n");
+        out.write("Compare_Less R2, R1\n");
+        out.write("JumpIfZero R2, " + vece + "\n");
+        manji.translate(out);
+        manji.genLoad("R3", out);
+        out.write("Jump kraj\n");
+        out.write(vece + ":\n");
+        veci.translate(out);
+        veci.genLoad("R3", out);
+        out.write(kraj + ":\n");
+        super.result = ASTNode.genLab();
+        out.write("Store R3, " + super.result + "\n");
+    }
+}
+
+medjukod:
+
+IMC<uslov>
+Load_Mem R1, RESULT<uslov>
+JumpIfNotZero R2, vece_manje
+IMC<nula>
+Load_Mem R3, RESULT<nula>
+Jump kraj
+vece_manje:
+Load_Const R2,0
+Compare_Less R2, R1
+JumpIfZero R2, vece
+IMC<manji>
+Load_Mem R3, RESULT<manji>
+Jump kraj
+vece:
+IMC<veci>
+Load_Mem R3, RESULT<veci>
+kraj:
+Store R3, RESULT<ConditionalExpression>
