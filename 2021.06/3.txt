@@ -1,0 +1,67 @@
+Repeat -> times ( TimesExpression ) {Body} exit ( ConditionExpression ) finalize { FinalStatement }
+
+class RepeatStatement extends Statement {
+    private Expression timesExpression;
+    private ArrayList<ASTNode> body;
+    private Expression conditionExpression;
+    private Statement finalStatement;
+
+    public RepeatStatement (Expression timesExpression, ArrayList<ASTNode> body,
+                            Expression conditionExpression, Statement finalStatement) {
+        this.timesExpression = timesExpression;
+        this.body = body;
+        this.conditionExpression = conditionExpression;
+        this.finalStatement = finalStatement;
+    }
+
+    public void translate (BufferedWriter out) throws IOException {
+        String startLab = ASTNode.genLab();
+        String endLab = ASTNode.genLab();
+        String tempVar = ASTNode.genVar();
+        timesExpression.translate(out);
+        timesExpression.genLoad("R1", out);
+        out.write("Store_Mem R1, " + tempVar + "\n");
+        out.write(startLab + ":\n");
+        out.write("Load_Mem R1, " + tempVar + "\n");
+        out.write("JumpIfZero R1, " + endLab + "\n");
+        for (ASTNode node : body) {
+            node.translate(out);
+        }
+        conditionExpression.translate(out);
+        conditionExpression.genLoad("R1", out);
+        out.write("Load_Const R2, 1\n");
+        out.write("Compare_Equal R1, R2\n");
+        out.write("JumpIfNotEqual R1, " + startLab + "\n");
+        finalStatement.translate(out);
+        out.write(endLab + ":\n");
+    }
+}
+
+generalna ideja:
+
+tempVar = timesExpression
+start:
+tempVar==0 ? jump kraj
+body
+condexp!=1? jump start
+final
+kraj:
+
+medjukod:
+
+IMC<timesExpression>
+Load_Mem R1, RESULT<timesExpression>
+Store_Mem R1, tempVar
+start:
+Load_Mem R1, tempVar
+JumpIfZero R1, kraj
+IMC<body[1]>
+...
+IMC<body[n]>
+IMC<conditionExpression>
+Load_Mem R1, RESULT<conditionExpression>
+Load_Const R2, 1
+Compare_Equal R1, R2
+JumpIfNotEqual R1, start
+IMC<finalStatement>
+kraj:

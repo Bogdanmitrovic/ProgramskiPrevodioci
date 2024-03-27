@@ -20,7 +20,7 @@ slovo=[A-Za-z]
 \] {return new Symbol(sym.CLOSE_BRACKET);}
 \. {return new Symbol(sym.DOT);}
 [\t\n\r]+ {;}
-{slovo}[{slovo}|{cifra}|_]* {return new Symbol(sym.ID,yytext());}
+{slovo}({slovo}|{cifra}|_)* {return new Symbol(sym.ID,yytext());}
 [+-]?{cifra}+.{cifra}+ {return new Symbol(sym.CONST_REAL, Double.parseDouble(yytext()));}
 [+-]?{cifra}+e[+-]?{cifra}+ {return new Symbol(sym.CONST_REAL, Double.parseDouble(yytext()));}
 [+-]?{cifra}+ {return new Symbol(sym.CONST_INT, Integer.parseInt(yytext()));}

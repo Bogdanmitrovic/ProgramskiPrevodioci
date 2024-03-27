@@ -5,21 +5,10 @@ aktivacioni slog:
 [stari bp] sp BP
 [result]
 
-struct layer:    !!!!!!PROVERITI
+struct layer:
 [weight] + 4
 [act_id] + 2
 [next] 0
-
-stack:
-[l] BP + 6
-[x] BP + 4
-[povratna adresa] sp
-[]
-[]
-[]
-[]
-[]
-[]
 
 8086 kod:
 PUSH BP
@@ -32,8 +21,8 @@ MOV AX, [BX + 2]
 PUSH AX
 MOV AX, [BX + 4]
 PUSH AX
-MOV AX, [BP + 4]    // moze i direktno PUSH [BP + 4]
-PUSH AX
+MOV AX, [BP + 4]    // moze i direktno da ide
+PUSH AX             // PUSH [BP + 4] umesto ovoga
 CALL activate
 ADD SP, 6
 POP AX

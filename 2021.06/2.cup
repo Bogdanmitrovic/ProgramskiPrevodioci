@@ -1,7 +1,8 @@
 terminal OPEN_BRACKET, CLOSE_BRACKET, DOT, ID, CONST_REAL, CONST_INT, CONST_STRING;
 non terminal Izraz;
 non terminal Promenljiva;
-
+// podrazumeva se da je ovo deo gramatike i negde postoji deo koji dodeljuje tipove promenljivama
+// mi samo treba da dodelimo tipove konstantama na osnovu dobijenih podataka iz lex
 Izraz ::= Promenljiva:p
 {:
     RESULT = p;
